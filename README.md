@@ -34,11 +34,11 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 Describe any challenges encountered while building the app.
 I was trying to code the UI programmatically instead of drag and drop.It took a while to finish.
-I found that when I click just add button without any text, null value gets added in the list. Trying to fix that. 
+I found that when I click just add button without any text, null value gets added in the list. Trying to fix that. (Resolved)
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [2020] [Smita Mujumdar]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
