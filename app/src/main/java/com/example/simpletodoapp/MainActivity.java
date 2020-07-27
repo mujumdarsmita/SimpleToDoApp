@@ -1,6 +1,8 @@
 package com.example.simpletodoapp;
 
 import android.content.Intent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,11 +21,15 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+  RecyclerView itemList;
+  Button addButton;
+  EditText editItems;
   ItemsAdapter adapter;
   ArrayList<String> list;
   static String KEY_ITEM_TEXT = "item_text";
   static String KEY_ITEM_POSITION = "item_position";
   static int edit_text_code = 3;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +39,10 @@ public class MainActivity extends AppCompatActivity {
   loadItems();
 
 
-    Button addButton = findViewById(R.id.add_button);
-    final EditText editItems = findViewById(R.id.add_item);
-    RecyclerView itemList = findViewById(R.id.item_list);
+   addButton = findViewById(R.id.add_button);
+    addButton.setEnabled(false);
+   editItems = findViewById(R.id.add_item);
+   itemList = findViewById(R.id.item_list);
 
     ItemsAdapter.OnSingleClickListener onSingleClickListener = new ItemsAdapter.OnSingleClickListener() {
       @Override
@@ -69,22 +76,33 @@ public class MainActivity extends AppCompatActivity {
     addButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        String newItem = editItems.getText().toString();
-        if(newItem!=null) {
+        String newItem = editItems.getText().toString().trim();
           list.add(newItem);
           adapter.notifyItemInserted(list.size()-1);
           editItems.setText("");
-          Toast.makeText(getApplicationContext(), "item is added", Toast.LENGTH_SHORT).show();
+          Toast.makeText(getApplicationContext(), "item is added!", Toast.LENGTH_SHORT).show();
+          saveItems();
 
-        }
-        else{
 
-          Toast.makeText(getApplicationContext(), "Add an item", Toast.LENGTH_SHORT).show();
-        }
-        saveItems();
       }
     });
 
+    editItems.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+        enableSubmitIfReady();
+      }
+    });
 
 
   }
@@ -104,6 +122,14 @@ public class MainActivity extends AppCompatActivity {
       }
   }
 
+
+  //Remove spaces from entered text
+  void enableSubmitIfReady(){
+    String text =  editItems.getText().toString().trim();
+    boolean isReady = text.length() > 0;
+    addButton.setEnabled(isReady);
+  }
+
   //get the File
   private File getDataFile(){
     return new File(getFilesDir(), "data.txt");
@@ -114,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
     try {
 
       list = new ArrayList<String>(FileUtils.readLines(getDataFile(), Charset.defaultCharset()));
+
+
       //list.clear();
       //saveItems();
 
